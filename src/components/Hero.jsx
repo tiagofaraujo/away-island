@@ -4,7 +4,7 @@ function Hero() {
   return (
     <section id="top" className="hero-section">
       <div className="hero-bg" aria-hidden="true">
-        <img src="/away-island/assets/away-hero.webp" alt="" />
+        <img src="/away-island/assets/away-hero.svg" alt="" />
       </div>
       <div className="hero-overlay" />
       <div className="hero-content">

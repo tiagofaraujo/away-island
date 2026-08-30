@@ -1,7 +1,7 @@
 function ExitPlan() {
   return (
     <section id="exit-plan" className="exit-section">
-      <img src="/away-island/assets/away-exit-plan.webp" alt="The AWAY survivor drawing a map on the island" />
+      <img src="/away-island/assets/away-exit-plan.svg" alt="The AWAY survivor drawing a map on the island" />
       <div className="exit-copy">
         <p className="eyebrow">The Exit Plan</p>
         <h2>The island has started drawing a map.</h2>

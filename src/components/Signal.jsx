@@ -12,7 +12,7 @@ function Signal() {
         </p>
       </div>
       <div className="signal-composition">
-        <img src="/away-island/assets/away-signal.webp" alt="AWAY signal on the island" />
+        <img src="/away-island/assets/away-signal.svg" alt="AWAY signal on the island" />
         <div className="signal-cards">
           {signalStages.map((item) => (
             <article className="signal-card" key={item.stage}>

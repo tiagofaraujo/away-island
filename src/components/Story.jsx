@@ -22,7 +22,7 @@ function Story() {
         </div>
       </div>
       <figure className="image-card tall">
-        <img src="/away-island/assets/away-survivor.webp" alt="AWAY survivor on a stormy shore" />
+        <img src="/away-island/assets/away-survivor.svg" alt="AWAY survivor on a stormy shore" />
         <figcaption>Lost the money. Not the hope.</figcaption>
       </figure>
     </section>

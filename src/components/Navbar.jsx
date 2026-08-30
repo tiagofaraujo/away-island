@@ -4,7 +4,7 @@ function Navbar() {
   return (
     <header className="nav-wrap">
       <a className="brand" href="#top" aria-label="AWAY Island home">
-        <img src="/away-island/assets/away-logo.webp" alt="AWAY logo" />
+        <img src="/away-island/assets/away-logo.svg" alt="AWAY logo" />
         <span>AWAY</span>
       </a>
       <nav className="nav-links" aria-label="Primary navigation">
