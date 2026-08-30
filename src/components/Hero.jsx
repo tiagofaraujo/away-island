@@ -9,11 +9,13 @@ function Hero() {
       <div className="hero-overlay" />
       <div className="hero-content">
         <p className="eyebrow"><span className="live-dot" />Signal unstable · survivor online</p>
-        <h1>AWAY</h1>
-        <p className="hero-tagline">We were exit liquidity. Now we are the meme.</p>
+        <h1 className="hero-title-classic">
+          We were exit liquidity.
+          <span>Now we are the meme.</span>
+        </h1>
+        <p className="hero-tagline hero-tagline-classic">AWAY — The island for traders left behind.</p>
         <p className="hero-copy">
-          The island for traders left behind. No fake alpha. No false rescue.
-          Just culture, scars and survival.
+          No fake alpha. No false rescue. Just culture, scars and survival.
         </p>
         <div className="actions">
           <a href={links.community} className="button button-primary">Enter the Island</a>
