@@ -4,6 +4,16 @@ Official experimental landing page for **AWAY** — the island for traders left 
 
 > We were exit liquidity. Now we are the meme.
 
+## Live site
+
+GitHub Pages target:
+
+```text
+https://tiagofaraujo.github.io/away-island/
+```
+
+If the first deployment is still processing, check the repository **Actions** tab.
+
 ## Concept
 
 AWAY Island has no internet.
@@ -21,6 +31,7 @@ Somewhere in the South Pacific, AWAY Island found its first survivor.
 - **The Signal** — fragments of the market that reach the island.
 - **The Whale** — the market force that moves beneath the surface.
 - **Baggy** — the empty wallet that survived the crash.
+- **The Exit Plan** — the next chapter being drawn in the sand.
 
 ## Safety
 
@@ -49,6 +60,16 @@ Preview:
 ```bash
 npm run preview
 ```
+
+## Deploy
+
+This repo includes a GitHub Actions workflow at:
+
+```text
+.github/workflows/deploy.yml
+```
+
+It builds the Vite app and deploys `dist/` to GitHub Pages.
 
 ## Disclaimer
 
