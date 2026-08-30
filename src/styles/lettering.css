@@ -1,0 +1,39 @@
+.hero-title-classic {
+  max-width: 1120px;
+  margin: 0 0 22px;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(3.4rem, 10vw, 9.35rem);
+  font-weight: 1000;
+  line-height: 0.86;
+  letter-spacing: -0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 16px 80px rgba(0, 0, 0, 0.72);
+}
+
+.hero-title-classic span {
+  display: block;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(247, 239, 227, 0.78);
+  text-shadow: none;
+}
+
+.hero-tagline-classic {
+  max-width: 760px;
+  margin-top: 0;
+  color: rgba(247, 239, 227, 0.84);
+  font-size: clamp(1.05rem, 1.8vw, 1.55rem);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+@media (max-width: 640px) {
+  .hero-title-classic {
+    font-size: clamp(3.15rem, 17vw, 5.3rem);
+    letter-spacing: -0.075em;
+  }
+
+  .hero-title-classic span {
+    -webkit-text-stroke-width: 0.8px;
+  }
+}
