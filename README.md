@@ -4,24 +4,24 @@ Official experimental landing page for **AWAY** — the island for traders left 
 
 > We were exit liquidity. Now we are the meme.
 
-## Live site
-
-GitHub Pages target:
-
-```text
-https://tiagofaraujo.github.io/away-island/
-```
-
-If the first deployment is still processing, check the repository **Actions** tab.
-
 ## Concept
 
-AWAY Island has no internet.
-Only broken signals from the market wreckage.
+AWAY Island has no internet. Only broken signals from the market wreckage.
 
 The story starts with a trader who was not flying to get rich. He was flying away — a job in New Zealand, a new life, a clean start. Then the storm hit. The market crashed. The plane followed.
 
 Somewhere in the South Pacific, AWAY Island found its first survivor.
+
+## Visual identity
+
+The site uses the same cinematic orange/black AWAY identity used in X posts:
+
+- stranded trader / survivor
+- whale as market force
+- broken laptop / Dead Terminal
+- cracked solar / unstable power
+- island map / Exit Plan
+- no signal / no fake alpha / no fake rescue
 
 ## Core lore elements
 
@@ -29,16 +29,13 @@ Somewhere in the South Pacific, AWAY Island found its first survivor.
 - **AWAY Island** — the place where broken traders wash ashore.
 - **The Dead Terminal** — a broken laptop powered by cracked solar and unstable batteries.
 - **The Signal** — fragments of the market that reach the island.
-- **The Whale** — the market force that moves beneath the surface.
+- **The Whale** — the market force moving beneath the surface.
 - **Baggy** — the empty wallet that survived the crash.
-- **The Exit Plan** — the next chapter being drawn in the sand.
+- **The Exit Plan** — the next chapter of the island.
 
 ## Safety
 
-No contract yet.
-No presale.
-No paid alpha.
-Beware of fakes.
+No contract yet. No presale. No private allocation. No paid alpha group. Beware of fakes.
 
 Any contract claiming to be `$AWAY` before being posted by official AWAY channels is fake.
 
@@ -61,15 +58,23 @@ Preview:
 npm run preview
 ```
 
-## Deploy
+## GitHub Pages
 
-This repo includes a GitHub Actions workflow at:
+A static fallback is also available in `docs/index.html`.
+
+To publish manually:
+
+1. Repository → Settings → Pages
+2. Source: Deploy from a branch
+3. Branch: `main`
+4. Folder: `/docs`
+5. Save
+
+Expected URL:
 
 ```text
-.github/workflows/deploy.yml
+https://tiagofaraujo.github.io/away-island/
 ```
-
-It builds the Vite app and deploys `dist/` to GitHub Pages.
 
 ## Disclaimer
 
