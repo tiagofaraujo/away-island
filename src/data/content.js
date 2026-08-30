@@ -1,5 +1,5 @@
 export const links = {
-  x: 'https://x.com/away1180271',
+  x: 'https://x.com/away_survivor',
   announcements: '#safety',
   community: '#community',
   linktree: '#community',
