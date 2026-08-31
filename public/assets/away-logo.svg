@@ -1,1 +1,60 @@
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 900' role='img' aria-label='AWAY logo'><defs><radialGradient id='g' cx='50%' cy='45%' r='65%'><stop offset='0%' stop-color='#ffb13d'/><stop offset='55%' stop-color='#f36a10'/><stop offset='100%' stop-color='#120705'/></radialGradient></defs><rect width='900' height='900' fill='#050505'/><circle cx='450' cy='450' r='390' fill='url(#g)' stroke='#f4ead8' stroke-width='24'/><path d='M160 610c95-78 210-112 355-89 84 13 153 44 215 89v75H160z' fill='#050505'/><path d='M248 268c52 38 80 92 79 161M250 270c-62 48-86 120-72 211M254 273c-6 84 18 153 75 208' stroke='#050505' stroke-width='26' stroke-linecap='round'/><path d='M520 545c-56-44-86-121-67-187 18-62 77-100 141-95 78 7 138 75 143 159-53-49-112-57-177-25 24 47 11 103-40 148z' fill='#050505'/><path d='M462 300l-120 265h74l20-52h117l20 52h82L536 300zm-2 154l35-91 35 91z' fill='#f4ead8'/><text x='450' y='735' text-anchor='middle' font-family='Impact, Anton, Arial Black, sans-serif' font-size='128' fill='#f4ead8' letter-spacing='6'>AWAY</text><text x='450' y='800' text-anchor='middle' font-family='Inter, Arial, sans-serif' font-size='28' fill='#050505' font-weight='900'>WE WERE EXIT LIQUIDITY. NOW WE ARE THE MEME.</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 720" role="img" aria-label="AWAY logo">
+  <defs>
+    <radialGradient id="sun" cx="58%" cy="52%" r="55%">
+      <stop offset="0%" stop-color="#ffe36f"/>
+      <stop offset="42%" stop-color="#ff7a18"/>
+      <stop offset="100%" stop-color="#160704"/>
+    </radialGradient>
+    <linearGradient id="cream" x1="0" x2="1">
+      <stop offset="0%" stop-color="#fff5df"/>
+      <stop offset="52%" stop-color="#f4ead8"/>
+      <stop offset="100%" stop-color="#ffe2a8"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 1  0 .28 0 0 .28  0 0 0 0 0  0 0 0 .8 0"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="2200" height="720" fill="transparent"/>
+
+  <g transform="translate(70 54)">
+    <circle cx="310" cy="310" r="286" fill="#050505"/>
+    <circle cx="310" cy="310" r="276" fill="url(#sun)" stroke="#ff6a14" stroke-width="13"/>
+    <circle cx="310" cy="310" r="276" fill="none" stroke="#050505" stroke-width="20" opacity=".72"/>
+
+    <path d="M8 438c120-52 242-66 368-38 104 23 184 16 246-20v238H8z" fill="#050505" opacity=".94"/>
+    <path d="M-12 498c126-30 240-28 354 4 132 38 250 26 342-34v156H-12z" fill="#130805" opacity=".9"/>
+
+    <circle cx="444" cy="346" r="92" fill="#ffe36f" opacity=".72"/>
+    <path d="M488 316c44-75 139-78 190-3-61-20-105-14-142 20 58 3 101 25 132 70-84-20-144-14-181 19 16-42 16-79 1-106z" fill="#050505" opacity=".98"/>
+
+    <path d="M118 162c47 46 63 96 48 159M120 164c-61 38-87 94-78 168M123 166c-4 66 17 117 63 154" fill="none" stroke="#050505" stroke-width="24" stroke-linecap="round"/>
+    <path d="M36 452c48-48 101-82 164-98 59-14 112-10 160 12v82H36z" fill="#050505"/>
+    <path d="M296 320c-36 8-59 37-59 74 0 35 20 62 51 75l-26 91h-132l24-92c-37-15-61-52-61-98 0-80 56-144 136-156 35-5 69 1 99 18z" fill="#050505"/>
+    <circle cx="270" cy="268" r="31" fill="#050505"/>
+  </g>
+
+  <g transform="translate(635 86)" filter="url(#glow)">
+    <path d="M87 462 L244 83 L360 83 L406 462 L294 462 L288 398 L173 398 L147 462 Z M205 312 L279 312 L268 186 Z" fill="#050505" stroke="#ff4b14" stroke-width="16" stroke-linejoin="round"/>
+    <path d="M87 462 L244 83 L360 83 L406 462 L294 462 L288 398 L173 398 L147 462 Z M205 312 L279 312 L268 186 Z" fill="url(#cream)"/>
+
+    <path d="M438 462 L508 83 L620 83 L622 297 L730 83 L844 83 L814 462 L702 462 L722 258 L619 462 L538 462 L533 255 L500 462 Z" fill="#050505" stroke="#ff4b14" stroke-width="16" stroke-linejoin="round"/>
+    <path d="M438 462 L508 83 L620 83 L622 297 L730 83 L844 83 L814 462 L702 462 L722 258 L619 462 L538 462 L533 255 L500 462 Z" fill="url(#cream)"/>
+
+    <path d="M848 462 L1002 83 L1119 83 L1168 462 L1054 462 L1048 398 L933 398 L907 462 Z M965 312 L1038 312 L1028 187 Z" fill="#050505" stroke="#ff4b14" stroke-width="16" stroke-linejoin="round"/>
+    <path d="M848 462 L1002 83 L1119 83 L1168 462 L1054 462 L1048 398 L933 398 L907 462 Z M965 312 L1038 312 L1028 187 Z" fill="url(#cream)"/>
+
+    <path d="M1195 83 L1328 83 L1392 216 L1512 83 L1644 83 L1437 319 L1416 462 L1298 462 L1320 316 Z" fill="#050505" stroke="#ff4b14" stroke-width="16" stroke-linejoin="round"/>
+    <path d="M1195 83 L1328 83 L1392 216 L1512 83 L1644 83 L1437 319 L1416 462 L1298 462 L1320 316 Z" fill="url(#cream)"/>
+
+    <path d="M116 548 C434 508 808 536 1534 488" fill="none" stroke="#ff6a14" stroke-width="30" stroke-linecap="round"/>
+    <path d="M116 548 C434 508 808 536 1534 488" fill="none" stroke="#050505" stroke-width="8" stroke-linecap="round" opacity=".62"/>
+  </g>
+
+  <g opacity=".8">
+    <path d="M1980 100c42 34 68 76 77 126M1983 103c-60 24-94 68-103 131" fill="none" stroke="#ff6a14" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="1996" cy="88" r="11" fill="#ff6a14"/>
+  </g>
+</svg>
