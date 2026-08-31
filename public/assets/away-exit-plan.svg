@@ -1,1 +1,43 @@
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1800 950' role='img' aria-label='AWAY exit plan'><defs><linearGradient id='s' x1='0' y1='0' x2='1' y2='1'><stop stop-color='#050505'/><stop offset='.42' stop-color='#15110e'/><stop offset='1' stop-color='#f36a10'/></linearGradient></defs><rect width='1800' height='950' fill='url(#s)'/><path d='M0 690c290-94 455-72 640-25 195 50 370 34 550-40 250-103 430-38 610 50v275H0z' fill='#050505' opacity='.88'/><circle cx='1370' cy='610' r='160' fill='#ff8a24' opacity='.62'/><path d='M210 770c185-88 405-103 640-30 102 32 210 50 315 40v90H210z' fill='#0b0908'/><path d='M450 735c190-160 370-178 540-54 105 77 208 96 308 58' fill='none' stroke='#f4ead8' stroke-width='9' stroke-dasharray='20 18' opacity='.8'/><path d='M640 646l-80 66 110 28zm390 48l86-86 34 116z' fill='#ff6a14'/><path d='M265 360c64 65 88 145 72 242M268 361c-92 58-128 147-112 273' stroke='#050505' stroke-width='34' stroke-linecap='round'/><text x='1040' y='250' text-anchor='middle' font-family='Impact, Anton, Arial Black, sans-serif' font-size='106' fill='#f4ead8' letter-spacing='4'>THE ISLAND</text><text x='1040' y='365' text-anchor='middle' font-family='Impact, Anton, Arial Black, sans-serif' font-size='122' fill='#ff6a14' letter-spacing='4'>DRAWS A MAP</text><text x='1040' y='438' text-anchor='middle' font-family='Inter, Arial, sans-serif' font-size='34' fill='#f4ead8' font-weight='900' letter-spacing='10'>THE EXIT PLAN · COMING IN CHAPTERS</text><text x='1450' y='825' font-family='Inter, Arial, sans-serif' font-size='44' fill='#f4ead8' font-weight='900'>AWAY</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 950" role="img" aria-label="AWAY exit plan background without text">
+  <defs>
+    <linearGradient id="s" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#050505"/>
+      <stop offset="0.42" stop-color="#15110e"/>
+      <stop offset="1" stop-color="#f36a10"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="79%" cy="62%" r="22%">
+      <stop stop-color="#ffb84d"/>
+      <stop offset="0.42" stop-color="#ff6a14"/>
+      <stop offset="1" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+  <rect width="1800" height="950" fill="url(#s)"/>
+  <rect width="1800" height="950" fill="url(#sun)" opacity="0.72"/>
+  <g fill="#050505" opacity="0.86">
+    <path d="M0 690c290-94 455-72 640-25 195 50 370 34 550-40 250-103 430-38 610 50v275H0z"/>
+    <path d="M0 778c240-58 420-62 640-20 230 44 420 24 650-44 184-54 340-44 510 5v231H0z" opacity="0.9"/>
+  </g>
+  <circle cx="1370" cy="610" r="160" fill="#ff8a24" opacity="0.48"/>
+  <g transform="translate(0 20)">
+    <path d="M250 750c178-86 388-99 618-30 102 31 210 50 315 40v92H250z" fill="#0b0908"/>
+    <path d="M450 720c190-160 370-178 540-54 105 77 208 96 308 58" fill="none" stroke="#f4ead8" stroke-width="9" stroke-dasharray="20 18" opacity="0.8"/>
+    <path d="M640 632l-80 66 110 28zm390 48l86-86 34 116z" fill="#ff6a14"/>
+    <circle cx="442" cy="718" r="30" fill="none" stroke="#ff6a14" stroke-width="7" opacity="0.75"/>
+    <path d="M320 785c42-34 86-34 132 0M514 770l70-58 76 58" fill="none" stroke="#f4ead8" stroke-width="6" opacity="0.48"/>
+  </g>
+  <g stroke="#050505" stroke-width="34" stroke-linecap="round" fill="none">
+    <path d="M265 360c64 65 88 145 72 242"/>
+    <path d="M268 361c-92 58-128 147-112 273"/>
+    <path d="M270 360c-14 106 25 184 112 234" stroke-width="28"/>
+  </g>
+  <path d="M110 700c90-70 210-94 360-56v110H110z" fill="#050505"/>
+  <g fill="#050505">
+    <path d="M706 552c-50 30-80 85-88 166l-16 156h180l-20-160c-8-74-26-128-56-162z"/>
+    <circle cx="696" cy="500" r="36"/>
+    <path d="M650 580c-76 52-120 112-132 180" stroke="#050505" stroke-width="34" stroke-linecap="round" fill="none"/>
+  </g>
+  <g transform="translate(1280 680)" opacity="0.75">
+    <path d="M0 52c62-54 126-60 194-18 54 34 104 36 150 8" fill="none" stroke="#ff8a24" stroke-width="7" stroke-linecap="round"/>
+    <path d="M28 96c78-32 160-34 246-4" fill="none" stroke="#f4ead8" stroke-width="5" stroke-opacity="0.24"/>
+  </g>
+</svg>
