@@ -3,9 +3,8 @@ import { links } from '../data/content.js';
 function Navbar() {
   return (
     <header className="nav-wrap">
-      <a className="brand" href="#top" aria-label="AWAY Island home">
+      <a className="brand brand-logo" href="#top" aria-label="AWAY Island home">
         <img src="/away-island/assets/away-logo.svg" alt="AWAY logo" />
-        <span>AWAY</span>
       </a>
       <nav className="nav-links" aria-label="Primary navigation">
         <a href="#story">Story</a>
