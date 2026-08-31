@@ -1,0 +1,20 @@
+name = "away-radar"
+main = "src/index.js"
+compatibility_date = "2026-08-31"
+
+[vars]
+DEFAULT_CHAIN = "solana"
+ALLOWED_ORIGIN = "https://tiagofaraujo.github.io"
+
+# Create this KV namespace in Cloudflare and replace the placeholder IDs.
+# Command:
+# wrangler kv namespace create RADAR_CACHE
+# wrangler kv namespace create RADAR_CACHE --preview
+#
+# [[kv_namespaces]]
+# binding = "RADAR_CACHE"
+# id = "REPLACE_WITH_KV_NAMESPACE_ID"
+# preview_id = "REPLACE_WITH_PREVIEW_KV_NAMESPACE_ID"
+
+[triggers]
+crons = ["0 */6 * * *"]
