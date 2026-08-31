@@ -10,7 +10,8 @@ function Navbar() {
         <a href="#story">Story</a>
         <a href="#terminal">Terminal</a>
         <a href="#signal">Signal</a>
-        <a href="#exit-plan">Exit Plan</a>
+        <a href="#radar">Radar</a>
+        <a href="#radar-lab">Scan</a>
         <a href="#safety">Safety</a>
       </nav>
       <a className="nav-cta" href={links.community}>Enter the Island</a>
