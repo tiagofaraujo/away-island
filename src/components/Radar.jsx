@@ -1,28 +1,30 @@
 function Radar() {
   const filters = [
-    { label: 'Previous ATH', value: '> $10M MC' },
-    { label: 'Current MC', value: '< $500K' },
-    { label: 'Status', value: 'Forgotten, not dead' },
-    { label: 'Risk', value: 'Liquidity first' },
+    { label: 'Past signal', value: 'ATH > $10M MC' },
+    { label: 'Current wreckage', value: 'MC < $500K' },
+    { label: 'Narrative state', value: 'Forgotten, not dead' },
+    { label: 'Rule zero', value: 'Liquidity first' },
   ];
 
   const checks = [
-    'ATH vs current market cap drawdown',
-    'Liquidity depth and exit risk',
+    'ATH market cap vs current market cap drawdown',
+    'Current liquidity depth and realistic exit risk',
+    '24h volume revival, not just one candle',
     'Holder distribution and whale pressure',
-    'Volume revival and social signal',
-    'Community survival after the crash',
-    'Fake pumps, bundles and sniper risk',
+    'Social links, Telegram/X survival and community pulse',
+    'Fake pumps, bundles, snipers and dead liquidity traps',
   ];
 
   return (
     <section id="radar" className="section radar-section">
       <div className="radar-bg" aria-hidden="true" />
       <div className="section-heading center">
-        <p className="eyebrow">The Core Theme</p>
-        <h2>The island is building a radar for forgotten memes.</h2>
+        <p className="eyebrow">AWAY Radar · Core Theme</p>
+        <h2>The island where forgotten memes wash ashore.</h2>
         <p>
-          AWAY is not just a story about being left behind. The long-term mission is to scan the wreckage for meme coins that once reached real attention, then collapsed into silence.
+          AWAY is a meme culture project with a research engine at its core.
+          The Dead Terminal scans market wreckage for memes that once reached real attention,
+          then disappeared below the waves. A signal is not a call. A signal is a reason to investigate.
         </p>
       </div>
 
@@ -37,11 +39,11 @@ function Radar() {
             <i className="blip three" />
           </div>
           <div className="terminal-lines compact">
-            <p>&gt; scanning Solana trenches...</p>
-            <p>&gt; previous ATH: over $10M market cap</p>
-            <p>&gt; current market cap: under $500K</p>
+            <p>&gt; scanning meme wreckage...</p>
+            <p>&gt; past market cap: above $10M</p>
+            <p>&gt; current market cap: below $500K</p>
             <p>&gt; liquidity filter required</p>
-            <p>&gt; signal is not a call. signal is research.</p>
+            <p>&gt; result: research signal, not financial advice</p>
           </div>
         </div>
 
@@ -55,7 +57,7 @@ function Radar() {
             ))}
           </div>
           <div className="checklist-card">
-            <h3>Every signal must survive the checks.</h3>
+            <h3>Every washed-up meme must survive the checks.</h3>
             <ul>
               {checks.map((check) => <li key={check}>{check}</li>)}
             </ul>
