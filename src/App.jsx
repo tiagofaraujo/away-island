@@ -4,6 +4,7 @@ import Story from './components/Story.jsx';
 import Terminal from './components/Terminal.jsx';
 import Signal from './components/Signal.jsx';
 import Radar from './components/Radar.jsx';
+import RadarLab from './components/RadarLab.jsx';
 import ExitPlan from './components/ExitPlan.jsx';
 import Community from './components/Community.jsx';
 import Safety from './components/Safety.jsx';
@@ -19,6 +20,7 @@ function App() {
       <Terminal />
       <Signal />
       <Radar />
+      <RadarLab />
       <ExitPlan />
       <Community />
       <Safety />
