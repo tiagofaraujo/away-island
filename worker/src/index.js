@@ -1,6 +1,11 @@
 const DEXSCREENER_BASE = 'https://api.dexscreener.com';
 const GECKO_BASE = 'https://api.geckoterminal.com/api/v2';
 
+const CORE_FILTER = {
+  minimumEstimatedAthMarketCap: 10_000_000,
+  maximumCurrentMarketCap: 500_000,
+};
+
 const corsHeaders = (origin = '*') => ({
   'access-control-allow-origin': origin,
   'access-control-allow-methods': 'GET,POST,OPTIONS',
@@ -43,7 +48,7 @@ function normalizeChain(chainId = 'solana') {
 
 async function fetchJson(url) {
   const response = await fetch(url, {
-    headers: { 'accept': 'application/json', 'user-agent': 'away-radar/0.1' },
+    headers: { accept: 'application/json', 'user-agent': 'away-radar/0.2' },
   });
   if (!response.ok) throw new Error(`${url} returned ${response.status}`);
   return response.json();
@@ -67,7 +72,7 @@ async function getGeckoOhlcv(network, poolAddress) {
     const url = `${GECKO_BASE}/networks/${network}/pools/${poolAddress}/ohlcv/day?aggregate=1&limit=1000`;
     const data = await fetchJson(url);
     return data?.data?.attributes?.ohlcv_list || [];
-  } catch (error) {
+  } catch (_error) {
     return [];
   }
 }
@@ -91,6 +96,12 @@ function estimateFromPair(pair, ohlcv) {
     estimatedAthMarketCap,
     drawdownPct,
   };
+}
+
+function passesCoreFilter(result) {
+  return Number(result.currentMarketCap || 0) > 0
+    && Number(result.currentMarketCap || 0) <= CORE_FILTER.maximumCurrentMarketCap
+    && Number(result.estimatedAthMarketCap || 0) >= CORE_FILTER.minimumEstimatedAthMarketCap;
 }
 
 function scoreSignal({ pair, estimate }) {
@@ -136,8 +147,8 @@ function scoreSignal({ pair, estimate }) {
   const risks = [];
   if (liquidity < 25_000) risks.push('low liquidity');
   if (volume24h < 5_000) risks.push('weak 24h volume');
-  if (athMc < 10_000_000) risks.push('ATH threshold not confirmed');
-  if (currentMc > 500_000) risks.push('current market cap above target filter');
+  if (athMc < CORE_FILTER.minimumEstimatedAthMarketCap) risks.push('ATH threshold not confirmed');
+  if (currentMc > CORE_FILTER.maximumCurrentMarketCap) risks.push('current market cap above target filter');
 
   return {
     score,
@@ -177,6 +188,8 @@ async function analyzeToken({ query, tokenAddress, chainId = 'solana' }, env) {
     txns24h: Number(pair?.txns?.h24?.buys || 0) + Number(pair?.txns?.h24?.sells || 0),
     estimatedAthMarketCap: estimate.estimatedAthMarketCap,
     drawdownPct: estimate.drawdownPct,
+    passesCoreFilter: false,
+    coreFilter: CORE_FILTER,
     score: scoring.score,
     verdict: scoring.verdict,
     risk: scoring.risk,
@@ -187,6 +200,8 @@ async function analyzeToken({ query, tokenAddress, chainId = 'solana' }, env) {
     cachedAt: Date.now(),
   };
 
+  result.passesCoreFilter = passesCoreFilter(result);
+
   if (env.RADAR_CACHE) {
     await env.RADAR_CACHE.put(cacheKey, JSON.stringify(result), { expirationTtl: 60 * 60 * 6 });
   }
@@ -195,27 +210,44 @@ async function analyzeToken({ query, tokenAddress, chainId = 'solana' }, env) {
 }
 
 async function handleCandidates(env) {
-  if (!env.RADAR_CACHE) return { items: [], note: 'KV not configured yet.' };
+  if (!env.RADAR_CACHE) {
+    return {
+      items: [],
+      criteria: CORE_FILTER,
+      note: 'KV not configured yet.',
+    };
+  }
+
   const saved = await env.RADAR_CACHE.get('candidates:latest', 'json');
-  return saved || { items: [], note: 'No scheduled scan has run yet.' };
+  return saved || {
+    items: [],
+    criteria: CORE_FILTER,
+    note: 'No scheduled scan has run yet.',
+  };
 }
 
 async function scheduledScan(env) {
   const profiles = await fetchJson(`${DEXSCREENER_BASE}/token-profiles/latest/v1`);
   const items = [];
-  for (const profile of profiles.slice(0, 40)) {
+
+  for (const profile of profiles.slice(0, 60)) {
     if (!profile?.tokenAddress || !profile?.chainId) continue;
     try {
       const result = await analyzeToken({ tokenAddress: profile.tokenAddress, chainId: profile.chainId }, env);
-      if (result.currentMarketCap <= 500_000 || result.estimatedAthMarketCap >= 10_000_000) {
-        items.push(result);
-      }
+      if (passesCoreFilter(result)) items.push(result);
     } catch (_error) {
-      // Ignore weak or unsupported profiles.
+      // Ignore weak, unsupported or rate-limited profiles.
     }
   }
+
   items.sort((a, b) => b.score - a.score);
-  const payload = { items: items.slice(0, 25), updatedAt: new Date().toISOString() };
+  const payload = {
+    items: items.slice(0, 25),
+    criteria: CORE_FILTER,
+    note: 'Strict mode: every listed meme passed ATH > $10M and current MC < $500K using available API estimates.',
+    updatedAt: new Date().toISOString(),
+  };
+
   if (env.RADAR_CACHE) await env.RADAR_CACHE.put('candidates:latest', JSON.stringify(payload));
   return payload;
 }
@@ -229,7 +261,7 @@ export default {
 
     try {
       if (url.pathname === '/' || url.pathname === '/health') {
-        return json({ ok: true, service: 'AWAY Radar', version: '0.1.0' }, 200, origin);
+        return json({ ok: true, service: 'AWAY Radar', version: '0.2.0', criteria: CORE_FILTER }, 200, origin);
       }
 
       if (url.pathname === '/api/analyze') {
