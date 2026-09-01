@@ -4,27 +4,36 @@ Official experimental landing page for **AWAY** — the island where forgotten m
 
 > We were exit liquidity. Now we are the meme.
 
-## Concept
+## Core product
 
-AWAY Island has no internet. Only broken signals from the market wreckage.
+AWAY is now simplified around one central pillar: the **AWAY Radar shortlist**.
 
-The story starts with a trader who was not flying to get rich. He was flying away — a job in New Zealand, a new life, a clean start. Then the storm hit. The market crashed. The plane followed.
+The first target list is strict:
 
-Somewhere in the South Pacific, AWAY Island found its first survivor.
-
-## Core theme: AWAY Radar
-
-AWAY is not only a meme story. The core project theme is the **AWAY Radar**:
-
-- scan forgotten meme coins;
-- look for memes that once reached strong attention;
-- default filter: previous ATH market cap above `$10M` and current market cap below `$500K`;
-- check liquidity, volume, holder/social survival and manipulation risk;
-- classify every result as research only, never a buy call.
+- previous estimated ATH market cap above `$10M`;
+- current market cap below `$500K`;
+- liquidity and volume reviewed before any deeper research;
+- every output is research only, never a buy call.
 
 Signal language:
 
 > A signal is not a call. A signal is research.
+
+## Site structure
+
+The site has been simplified. The standalone Terminal and Signal sections were removed from the main page to keep the project focused.
+
+Current sections:
+
+- Hero
+- Story
+- AWAY Radar thesis
+- Forgotten Meme Shortlist
+- Manual Scan Lab
+- Exit Plan
+- Community
+- Safety
+- Footer
 
 ## Radar stack
 
@@ -33,6 +42,7 @@ Frontend:
 - React + Vite
 - GitHub Pages
 - `src/components/Radar.jsx`
+- `src/components/MemeShortlist.jsx`
 - `src/components/RadarLab.jsx`
 
 Backend:
@@ -43,28 +53,31 @@ Backend:
 - Cloudflare KV for cache/candidate shortlist when configured
 - Cron Trigger every 6 hours
 
+## Worker endpoints
+
+```text
+GET  /health
+POST /api/analyze
+GET  /api/analyze?token=<TOKEN_ADDRESS>&chain=solana
+GET  /api/candidates
+GET  /api/run-scan
+```
+
+`/api/candidates` only returns tokens that pass both core filters when the scheduled scanner has data:
+
+```text
+estimatedAthMarketCap >= 10000000
+currentMarketCap <= 500000
+```
+
 ## Visual identity
 
 The site uses the same cinematic orange/black AWAY identity used in X posts:
 
-- stranded trader / survivor
-- whale as market force
-- broken laptop / Dead Terminal
-- cracked solar / unstable power
-- island map / Exit Plan
-- no signal / no fake alpha / no fake rescue
-- meme graveyard radar / research terminal
-
-## Core lore elements
-
-- **The Survivor** — the first trader left behind.
-- **AWAY Island** — the place where broken traders and forgotten memes wash ashore.
-- **The Dead Terminal** — a broken laptop powered by cracked solar and unstable batteries.
-- **The Signal** — fragments of the market that reach the island.
-- **The Whale** — the market force moving beneath the surface.
-- **Baggy** — the empty wallet that survived the crash.
-- **AWAY Radar** — the system that scans the meme wreckage.
-- **The Exit Plan** — the next chapter of the island.
+- island/survivor/whale visual language;
+- market wreckage and forgotten memes;
+- no fake alpha, no fake rescue;
+- research-first radar.
 
 ## Safety
 
