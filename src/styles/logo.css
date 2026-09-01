@@ -1,20 +1,21 @@
 .brand-logo {
-  min-width: 220px;
-  max-width: 280px;
-  height: 74px;
+  min-width: 118px;
+  max-width: 152px;
+  height: 44px;
   display: inline-flex;
   align-items: center;
+  flex: 0 0 auto;
 }
 
 .brand-logo img {
   width: 100%;
   height: auto;
-  max-height: 74px;
+  max-height: 44px;
   object-fit: contain;
   border: 0 !important;
   border-radius: 0 !important;
   box-shadow: none !important;
-  filter: drop-shadow(0 0 18px rgba(255, 106, 20, 0.36));
+  filter: drop-shadow(0 0 10px rgba(255, 106, 20, 0.26));
 }
 
 .footer-with-logo {
@@ -27,9 +28,9 @@
 }
 
 .footer-brand-block img {
-  width: min(280px, 70vw);
+  width: min(190px, 56vw);
   height: auto;
-  filter: drop-shadow(0 0 18px rgba(255, 106, 20, 0.26));
+  filter: drop-shadow(0 0 12px rgba(255, 106, 20, 0.22));
 }
 
 .footer-brand-block p {
@@ -38,16 +39,28 @@
 
 @media (max-width: 760px) {
   .brand-logo {
-    min-width: 150px;
-    max-width: 180px;
-    height: 54px;
+    min-width: 86px;
+    max-width: 112px;
+    height: 34px;
   }
 
   .brand-logo img {
-    max-height: 54px;
+    max-height: 34px;
   }
 
   .nav-wrap {
-    gap: 12px;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .brand-logo {
+    min-width: 74px;
+    max-width: 96px;
+    height: 30px;
+  }
+
+  .brand-logo img {
+    max-height: 30px;
   }
 }
