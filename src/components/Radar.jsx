@@ -1,30 +1,30 @@
 function Radar() {
   const filters = [
-    { label: 'Past signal', value: 'ATH > $10M MC' },
-    { label: 'Current wreckage', value: 'MC < $500K' },
-    { label: 'Narrative state', value: 'Forgotten, not dead' },
-    { label: 'Rule zero', value: 'Liquidity first' },
+    { label: 'Previous ATH', value: '> $10M MC' },
+    { label: 'Current MC', value: '< $500K' },
+    { label: 'Purpose', value: 'Research only' },
+    { label: 'Rule', value: 'Both filters required' },
   ];
 
   const checks = [
-    'ATH market cap vs current market cap drawdown',
-    'Current liquidity depth and realistic exit risk',
-    '24h volume revival, not just one candle',
-    'Holder distribution and whale pressure',
-    'Social links, Telegram/X survival and community pulse',
-    'Fake pumps, bundles, snipers and dead liquidity traps',
+    'ATH market cap above $10M must be estimated or verified',
+    'Current market cap must be below $500K',
+    'Liquidity must be strong enough to enter and exit without getting trapped',
+    '24h and 7d volume must show signs of life, not one fake candle',
+    'Social accounts and community must still exist after the crash',
+    'Bundles, snipers, whales and LP risk still need manual review',
   ];
 
   return (
     <section id="radar" className="section radar-section">
       <div className="radar-bg" aria-hidden="true" />
       <div className="section-heading center">
-        <p className="eyebrow">AWAY Radar · Core Theme</p>
-        <h2>The island where forgotten memes wash ashore.</h2>
+        <p className="eyebrow">The Core Product</p>
+        <h2>AWAY scans forgotten memes that already had a real cycle.</h2>
         <p>
-          AWAY is a meme culture project with a research engine at its core.
-          The Dead Terminal scans market wreckage for memes that once reached real attention,
-          then disappeared below the waves. A signal is not a call. A signal is a reason to investigate.
+          The island is no longer only a refuge. It is becoming a research engine
+          for memes that once reached attention, collapsed below the surface and
+          may still be worth deeper investigation.
         </p>
       </div>
 
@@ -39,11 +39,11 @@ function Radar() {
             <i className="blip three" />
           </div>
           <div className="terminal-lines compact">
-            <p>&gt; scanning meme wreckage...</p>
-            <p>&gt; past market cap: above $10M</p>
-            <p>&gt; current market cap: below $500K</p>
-            <p>&gt; liquidity filter required</p>
-            <p>&gt; result: research signal, not financial advice</p>
+            <p>&gt; rule 1: ATH market cap above $10M</p>
+            <p>&gt; rule 2: current market cap below $500K</p>
+            <p>&gt; rule 3: liquidity before narrative</p>
+            <p>&gt; rule 4: signal is not a call</p>
+            <p>&gt; output: shortlist for deeper research</p>
           </div>
         </div>
 
@@ -57,7 +57,7 @@ function Radar() {
             ))}
           </div>
           <div className="checklist-card">
-            <h3>Every washed-up meme must survive the checks.</h3>
+            <h3>Only survivors pass the first gate.</h3>
             <ul>
               {checks.map((check) => <li key={check}>{check}</li>)}
             </ul>
