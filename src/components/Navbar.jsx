@@ -7,9 +7,9 @@ function Navbar() {
         <img src="/away-island/assets/away-logo.svg" alt="AWAY logo" />
       </a>
       <nav className="nav-links" aria-label="Primary navigation">
-        <a href="#story">Story</a>
+        <a href="#kol-watch">Live</a>
         <a href="#radar">Radar</a>
-        <a href="#shortlist">Shortlist</a>
+        <a href="#shortlist">Graveyard</a>
         <a href="#radar-lab">Scan</a>
         <a href="#safety">Safety</a>
       </nav>
