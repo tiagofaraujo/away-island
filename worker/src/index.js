@@ -6,10 +6,13 @@ const CORE_FILTER = {
   maximumCurrentMarketCap: 500_000,
 };
 
+const LIVE_WINDOW_MINUTES = 120;
+const MIN_KOL_CONFLUENCE = 2;
+
 const corsHeaders = (origin = '*') => ({
   'access-control-allow-origin': origin,
   'access-control-allow-methods': 'GET,POST,OPTIONS',
-  'access-control-allow-headers': 'content-type, authorization',
+  'access-control-allow-headers': 'content-type, authorization, x-away-webhook-secret',
   'access-control-max-age': '86400',
 });
 
@@ -46,9 +49,14 @@ function normalizeChain(chainId = 'solana') {
   return chain;
 }
 
-async function fetchJson(url) {
+async function fetchJson(url, options = {}) {
   const response = await fetch(url, {
-    headers: { accept: 'application/json', 'user-agent': 'away-radar/0.2' },
+    ...options,
+    headers: {
+      accept: 'application/json',
+      'user-agent': 'away-radar/0.3',
+      ...(options.headers || {}),
+    },
   });
   if (!response.ok) throw new Error(`${url} returned ${response.status}`);
   return response.json();
@@ -60,7 +68,7 @@ function chooseBestPair(pairs = [], chainId = 'solana') {
     .sort((a, b) => Number(b?.liquidity?.usd || 0) - Number(a?.liquidity?.usd || 0))[0] || pairs[0];
 }
 
-async function getDexData(tokenAddress, chainId) {
+async function getDexData(tokenAddress, chainId = 'solana') {
   const data = await fetchJson(`${DEXSCREENER_BASE}/latest/dex/tokens/${tokenAddress}`);
   const pair = chooseBestPair(data.pairs || [], chainId);
   if (!pair) throw new Error('No DexScreener pair found for token.');
@@ -83,7 +91,9 @@ function estimateFromPair(pair, ohlcv) {
   const supplyEstimate = priceUsd > 0 && currentMarketCap > 0 ? currentMarketCap / priceUsd : null;
   const highs = Array.isArray(ohlcv) ? ohlcv.map((row) => Number(row?.[2] || 0)).filter(Boolean) : [];
   const maxHistoricalPrice = highs.length ? Math.max(...highs) : priceUsd;
-  const estimatedAthMarketCap = supplyEstimate && maxHistoricalPrice ? supplyEstimate * maxHistoricalPrice : currentMarketCap;
+  const estimatedAthMarketCap = supplyEstimate && maxHistoricalPrice
+    ? supplyEstimate * maxHistoricalPrice
+    : currentMarketCap;
   const drawdownPct = estimatedAthMarketCap > 0 && currentMarketCap > 0
     ? Math.max(0, Math.min(100, (1 - currentMarketCap / estimatedAthMarketCap) * 100))
     : null;
@@ -110,6 +120,8 @@ function scoreSignal({ pair, estimate }) {
   const liquidity = Number(pair?.liquidity?.usd || 0);
   const volume24h = Number(pair?.volume?.h24 || 0);
   const drawdown = Number(estimate.drawdownPct || 0);
+  const buys = Number(pair?.txns?.h1?.buys || pair?.txns?.h24?.buys || 0);
+  const sells = Number(pair?.txns?.h1?.sells || pair?.txns?.h24?.sells || 0);
 
   let score = 0;
   if (athMc >= 10_000_000) score += 20;
@@ -130,7 +142,7 @@ function scoreSignal({ pair, estimate }) {
   else if (volume24h >= 25_000) score += 8;
   else if (volume24h >= 5_000) score += 4;
 
-  const txns = Number(pair?.txns?.h24?.buys || 0) + Number(pair?.txns?.h24?.sells || 0);
+  const txns = buys + sells;
   if (txns >= 300) score += 8;
   else if (txns >= 80) score += 5;
   else if (txns >= 20) score += 2;
@@ -153,7 +165,10 @@ function scoreSignal({ pair, estimate }) {
   return {
     score,
     verdict,
-    risk: risks.length ? `Main risks: ${risks.join(', ')}.` : 'Main risk: manual review still required for holders, bundles and social activity.',
+    buySellRatio: sells > 0 ? buys / sells : buys > 0 ? buys : 0,
+    risk: risks.length
+      ? `Main risks: ${risks.join(', ')}.`
+      : 'Main risk: manual review still required for holders, bundles, deployer history and social activity.',
   };
 }
 
@@ -165,7 +180,7 @@ async function analyzeToken({ query, tokenAddress, chainId = 'solana' }, env) {
   const cacheKey = `analysis:${chain}:${token}`;
   if (env.RADAR_CACHE) {
     const cached = await env.RADAR_CACHE.get(cacheKey, 'json');
-    if (cached && Date.now() - cached.cachedAt < 1000 * 60 * 15) return { ...cached, cached: true };
+    if (cached && Date.now() - cached.cachedAt < 1000 * 60 * 5) return { ...cached, cached: true };
   }
 
   const { pair } = await getDexData(token, chain);
@@ -184,14 +199,21 @@ async function analyzeToken({ query, tokenAddress, chainId = 'solana' }, env) {
     priceUsd: estimate.priceUsd,
     currentMarketCap: estimate.currentMarketCap,
     liquidityUsd: Number(pair?.liquidity?.usd || 0),
+    volume5m: Number(pair?.volume?.m5 || 0),
+    volume1h: Number(pair?.volume?.h1 || 0),
     volume24h: Number(pair?.volume?.h24 || 0),
-    txns24h: Number(pair?.txns?.h24?.buys || 0) + Number(pair?.txns?.h24?.sells || 0),
+    buys1h: Number(pair?.txns?.h1?.buys || 0),
+    sells1h: Number(pair?.txns?.h1?.sells || 0),
+    priceChange1h: Number(pair?.priceChange?.h1 || 0),
+    priceChange24h: Number(pair?.priceChange?.h24 || 0),
+    pairCreatedAt: pair.pairCreatedAt || null,
     estimatedAthMarketCap: estimate.estimatedAthMarketCap,
     drawdownPct: estimate.drawdownPct,
     passesCoreFilter: false,
     coreFilter: CORE_FILTER,
     score: scoring.score,
     verdict: scoring.verdict,
+    buySellRatio: scoring.buySellRatio,
     risk: scoring.risk,
     dataQuality: ohlcv.length
       ? 'ATH is estimated from GeckoTerminal OHLCV and current supply approximation. Manual validation required.'
@@ -209,21 +231,165 @@ async function analyzeToken({ query, tokenAddress, chainId = 'solana' }, env) {
   return result;
 }
 
-async function handleCandidates(env) {
-  if (!env.RADAR_CACHE) {
-    return {
-      items: [],
-      criteria: CORE_FILTER,
-      note: 'KV not configured yet.',
-    };
+async function getKolRegistry(env) {
+  if (!env.RADAR_CACHE) return [];
+  return (await env.RADAR_CACHE.get('kols:registry', 'json')) || [];
+}
+
+function publicKol(kol) {
+  return {
+    id: kol.id,
+    label: kol.label,
+    tag: kol.tag || 'public wallet',
+    score: Number(kol.score || 50),
+    active: kol.active !== false,
+  };
+}
+
+async function saveKolRegistry(env, items) {
+  if (!env.RADAR_CACHE) throw new Error('KV not configured.');
+  await env.RADAR_CACHE.put('kols:registry', JSON.stringify(items));
+}
+
+function requireAdmin(request, env) {
+  const supplied = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '');
+  return Boolean(env.ADMIN_TOKEN && supplied && supplied === env.ADMIN_TOKEN);
+}
+
+function requireWebhook(request, env) {
+  const supplied = request.headers.get('x-away-webhook-secret');
+  return Boolean(env.WEBHOOK_SECRET && supplied && supplied === env.WEBHOOK_SECRET);
+}
+
+function inferKolEvents(payload, registry) {
+  const transactions = Array.isArray(payload) ? payload : Array.isArray(payload?.transactions) ? payload.transactions : [payload];
+  const byWallet = new Map(registry.filter((k) => k.active !== false).map((k) => [k.wallet, k]));
+  const events = [];
+
+  for (const tx of transactions) {
+    const transfers = Array.isArray(tx?.tokenTransfers) ? tx.tokenTransfers : [];
+    for (const transfer of transfers) {
+      const kol = byWallet.get(transfer?.toUserAccount);
+      const mint = transfer?.mint;
+      if (!kol || !mint) continue;
+      events.push({
+        id: `${tx.signature || 'tx'}:${kol.id || kol.wallet}:${mint}`,
+        signature: tx.signature || null,
+        kolId: kol.id,
+        kolLabel: kol.label,
+        kolScore: Number(kol.score || 50),
+        wallet: kol.wallet,
+        tokenAddress: mint,
+        tokenAmount: Number(transfer.tokenAmount || 0),
+        side: 'buy',
+        timestamp: tx.timestamp ? new Date(Number(tx.timestamp) * 1000).toISOString() : new Date().toISOString(),
+      });
+    }
+  }
+  return events;
+}
+
+async function appendKolEvents(env, incoming) {
+  if (!env.RADAR_CACHE || !incoming.length) return [];
+  const current = (await env.RADAR_CACHE.get('events:kol:recent', 'json')) || [];
+  const seen = new Set(current.map((event) => event.id));
+  const merged = [...incoming.filter((event) => !seen.has(event.id)), ...current]
+    .filter((event) => Date.now() - new Date(event.timestamp).getTime() <= 1000 * 60 * 60 * 24)
+    .slice(0, 1000);
+  await env.RADAR_CACHE.put('events:kol:recent', JSON.stringify(merged), { expirationTtl: 60 * 60 * 48 });
+  return merged;
+}
+
+function confluenceVerdict(score) {
+  if (score >= 85) return 'Island Alert';
+  if (score >= 75) return 'Strong Confluence';
+  if (score >= 60) return 'Survivor Signal';
+  if (score >= 40) return 'Weak Signal';
+  return 'Noise';
+}
+
+async function buildConfluenceSignals(env) {
+  if (!env.RADAR_CACHE) return [];
+  const events = (await env.RADAR_CACHE.get('events:kol:recent', 'json')) || [];
+  const cutoff = Date.now() - LIVE_WINDOW_MINUTES * 60 * 1000;
+  const recent = events.filter((event) => new Date(event.timestamp).getTime() >= cutoff && event.side === 'buy');
+  const grouped = new Map();
+
+  for (const event of recent) {
+    if (!grouped.has(event.tokenAddress)) grouped.set(event.tokenAddress, []);
+    grouped.get(event.tokenAddress).push(event);
   }
 
+  const signals = [];
+
+  for (const [tokenAddress, tokenEvents] of grouped.entries()) {
+    const uniqueKols = [...new Map(tokenEvents.map((event) => [event.kolId || event.wallet, event])).values()];
+    if (uniqueKols.length < MIN_KOL_CONFLUENCE) continue;
+
+    try {
+      const market = await analyzeToken({ tokenAddress, chainId: 'solana' }, env);
+      const avgKolScore = uniqueKols.reduce((sum, event) => sum + Number(event.kolScore || 50), 0) / uniqueKols.length;
+      const timestamps = uniqueKols.map((event) => new Date(event.timestamp).getTime()).sort((a, b) => a - b);
+      const spreadMinutes = Math.max(1, Math.round((timestamps[timestamps.length - 1] - timestamps[0]) / 60000));
+
+      let score = 0;
+      score += Math.min(25, uniqueKols.length * 7);
+      score += Math.min(20, Math.round(avgKolScore * 0.20));
+      if (spreadMinutes <= 30) score += 15;
+      else if (spreadMinutes <= 60) score += 10;
+      else score += 5;
+      if (market.liquidityUsd >= 50_000) score += 12;
+      else if (market.liquidityUsd >= 25_000) score += 8;
+      else if (market.liquidityUsd >= 10_000) score += 3;
+      if (market.buySellRatio >= 1.5) score += 10;
+      else if (market.buySellRatio >= 1.1) score += 6;
+      if (market.volume1h >= 50_000) score += 8;
+      else if (market.volume1h >= 10_000) score += 4;
+      if (market.priceChange1h <= 80) score += 5;
+      else if (market.priceChange1h > 150) score -= 10;
+      if (market.currentMarketCap > 0 && market.currentMarketCap <= 500_000) score += 5;
+
+      score = Math.max(0, Math.min(100, Math.round(score)));
+
+      signals.push({
+        token: market.token,
+        name: market.name,
+        tokenAddress,
+        pairUrl: market.pairUrl,
+        kolCount: uniqueKols.length,
+        averageKolScore: Math.round(avgKolScore),
+        windowMinutes: spreadMinutes,
+        confluenceScore: score,
+        verdict: confluenceVerdict(score),
+        currentMarketCap: market.currentMarketCap,
+        liquidityUsd: market.liquidityUsd,
+        volume1h: market.volume1h,
+        buySellRatio: market.buySellRatio,
+        priceChange1h: market.priceChange1h,
+        buyers: uniqueKols.map((event) => ({
+          id: event.kolId,
+          label: event.kolLabel,
+          score: event.kolScore,
+          timestamp: event.timestamp,
+        })),
+        updatedAt: new Date().toISOString(),
+      });
+    } catch (_error) {
+      // Keep the live engine resilient if one token has no supported market pair.
+    }
+  }
+
+  signals.sort((a, b) => b.confluenceScore - a.confluenceScore);
+  await env.RADAR_CACHE.put('signals:live', JSON.stringify(signals.slice(0, 50)), { expirationTtl: 60 * 60 * 6 });
+  return signals.slice(0, 50);
+}
+
+async function handleCandidates(env) {
+  if (!env.RADAR_CACHE) {
+    return { items: [], criteria: CORE_FILTER, note: 'KV not configured yet.' };
+  }
   const saved = await env.RADAR_CACHE.get('candidates:latest', 'json');
-  return saved || {
-    items: [],
-    criteria: CORE_FILTER,
-    note: 'No scheduled scan has run yet.',
-  };
+  return saved || { items: [], criteria: CORE_FILTER, note: 'No scheduled scan has run yet.' };
 }
 
 async function scheduledScan(env) {
@@ -236,7 +402,7 @@ async function scheduledScan(env) {
       const result = await analyzeToken({ tokenAddress: profile.tokenAddress, chainId: profile.chainId }, env);
       if (passesCoreFilter(result)) items.push(result);
     } catch (_error) {
-      // Ignore weak, unsupported or rate-limited profiles.
+      // Ignore unsupported or rate-limited profiles.
     }
   }
 
@@ -244,11 +410,14 @@ async function scheduledScan(env) {
   const payload = {
     items: items.slice(0, 25),
     criteria: CORE_FILTER,
-    note: 'Strict mode: every listed meme passed ATH > $10M and current MC < $500K using available API estimates.',
+    note: 'Automated discovery from current DexScreener profiles. ATH remains an estimate until independently verified.',
     updatedAt: new Date().toISOString(),
   };
 
-  if (env.RADAR_CACHE) await env.RADAR_CACHE.put('candidates:latest', JSON.stringify(payload));
+  if (env.RADAR_CACHE) {
+    await env.RADAR_CACHE.put('candidates:latest', JSON.stringify(payload));
+    await buildConfluenceSignals(env);
+  }
   return payload;
 }
 
@@ -261,7 +430,13 @@ export default {
 
     try {
       if (url.pathname === '/' || url.pathname === '/health') {
-        return json({ ok: true, service: 'AWAY Radar', version: '0.2.0', criteria: CORE_FILTER }, 200, origin);
+        return json({
+          ok: true,
+          service: 'AWAY Radar',
+          version: '0.3.0',
+          criteria: CORE_FILTER,
+          modules: ['graveyard-radar', 'token-scan', 'kol-watch', 'confluence-engine'],
+        }, 200, origin);
       }
 
       if (url.pathname === '/api/analyze') {
@@ -278,7 +453,53 @@ export default {
         return json(await handleCandidates(env), 200, origin);
       }
 
+      if (url.pathname === '/api/live') {
+        const signals = env.RADAR_CACHE
+          ? (await env.RADAR_CACHE.get('signals:live', 'json')) || await buildConfluenceSignals(env)
+          : [];
+        return json({
+          signals,
+          note: 'Live KOL confluence. Signals are research only, not buy calls.',
+          updatedAt: new Date().toISOString(),
+        }, 200, origin);
+      }
+
+      if (url.pathname === '/api/kols' && request.method === 'GET') {
+        const registry = await getKolRegistry(env);
+        return json({ items: registry.filter((kol) => kol.active !== false).map(publicKol) }, 200, origin);
+      }
+
+      if (url.pathname === '/api/kols' && request.method === 'POST') {
+        if (!requireAdmin(request, env)) return json({ error: 'Unauthorized' }, 401, origin);
+        const body = await request.json();
+        if (!body?.wallet || !body?.label) return json({ error: 'wallet and label are required' }, 400, origin);
+        const registry = await getKolRegistry(env);
+        const item = {
+          id: body.id || crypto.randomUUID(),
+          wallet: body.wallet,
+          label: body.label,
+          tag: body.tag || 'public KOL wallet',
+          score: Math.max(0, Math.min(100, Number(body.score || 50))),
+          active: body.active !== false,
+          addedAt: new Date().toISOString(),
+        };
+        const next = [item, ...registry.filter((kol) => kol.wallet !== item.wallet)];
+        await saveKolRegistry(env, next);
+        return json({ ok: true, item: publicKol(item) }, 201, origin);
+      }
+
+      if (url.pathname === '/api/webhooks/wallets' && request.method === 'POST') {
+        if (!requireWebhook(request, env)) return json({ error: 'Unauthorized webhook' }, 401, origin);
+        const payload = await request.json();
+        const registry = await getKolRegistry(env);
+        const events = inferKolEvents(payload, registry);
+        await appendKolEvents(env, events);
+        const signals = await buildConfluenceSignals(env);
+        return json({ ok: true, acceptedEvents: events.length, liveSignals: signals.length }, 200, origin);
+      }
+
       if (url.pathname === '/api/run-scan') {
+        if (env.ADMIN_TOKEN && !requireAdmin(request, env)) return json({ error: 'Unauthorized' }, 401, origin);
         return json(await scheduledScan(env), 200, origin);
       }
 
