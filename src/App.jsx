@@ -1,6 +1,7 @@
 import Navbar from './components/Navbar.jsx';
 import Hero from './components/Hero.jsx';
 import Story from './components/Story.jsx';
+import KolWatch from './components/KolWatch.jsx';
 import Radar from './components/Radar.jsx';
 import MemeShortlist from './components/MemeShortlist.jsx';
 import RadarLab from './components/RadarLab.jsx';
@@ -16,6 +17,7 @@ function App() {
       <Navbar />
       <Hero />
       <Story />
+      <KolWatch />
       <Radar />
       <MemeShortlist />
       <RadarLab />
